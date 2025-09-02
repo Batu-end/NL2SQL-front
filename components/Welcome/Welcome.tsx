@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Anchor, Text, Title } from '@mantine/core';
 import classes from './Welcome.module.css';
 
@@ -18,6 +19,7 @@ export function Welcome() {
         </Anchor>
         . To get started edit page.tsx file.
       </Text>
+      <Link href="/chat">Chat</Link>
     </>
   );
 }
