@@ -1,0 +1,24 @@
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.main {
+    flex-grow: 1;
+    padding: var(--mantine-spacing-md);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.tableWrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: var(--mantine-spacing-md);
+}
+
+.pagination {
+    margin-top: auto;
+}
