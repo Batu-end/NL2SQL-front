@@ -1,0 +1,25 @@
+.messageRow {
+    display: flex;
+    margin-bottom: var(--mantine-spacing-md);
+  }
+  
+  .userRow {
+    justify-content: flex-end;
+  }
+  
+  .botRow {
+    justify-content: flex-start;
+  }
+  
+  .messageBubble {
+    max-width: 70%;
+  }
+  
+  .userBubble {
+    background-color: var(--mantine-color-blue-light);
+  }
+  
+  .botBubble {
+    background-color: var(--mantine-color-gray-light);
+  }
+  

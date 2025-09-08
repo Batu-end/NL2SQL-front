@@ -1,0 +1,20 @@
+.chatBox {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 80vh;
+  }
+  
+  .messageContainer {
+    flex-grow: 1;
+  }
+  
+  .inputArea {
+    padding-top: var(--mantine-spacing-md);
+    border-top: 1px solid var(--mantine-color-gray-3);
+  }
+  
+  .textInput {
+    flex-grow: 1;
+  }
+  

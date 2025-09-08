@@ -1,9 +1,11 @@
 'use client';
 
-import { AppShell, Tabs, Text } from '@mantine/core';
+import { AppShell, Tabs } from '@mantine/core';
 import { useState } from 'react';
 import { SchemaExplorer } from '@/components/SchemaExplorer/SchemaExplorer';
 import { DataTableViewer } from '@/components/DataTableViewer/DataTableViewer';
+import { ChatBox } from '@/components/Chat/ChatBox';
+
 
 export default function ChatPage() {
   const [activeTab, setActiveTab] = useState<string | null>('chat');
@@ -28,9 +30,7 @@ export default function ChatPage() {
           </Tabs.List>
 
           <Tabs.Panel value="chat" pt="md">
-            {/* Your chat components will go here */}
-            <Text>This is the main chat interface.</Text>
-            <Text>You can ask questions like "Show me all orders from the last 7 days."</Text>
+            <ChatBox />
           </Tabs.Panel>
 
           {viewingTable && (
