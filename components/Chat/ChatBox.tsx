@@ -10,11 +10,17 @@ import classes from './ChatBox.module.css';
 async function getBotResponse(message: string): Promise<string> {
   console.log('Sending to backend:', message);
   // Simulate network delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const response = await fetch('http://localhost:8000/api/ask', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ question: message }),
+  });
 
-  // In the future, this will be a POST request to the FastAPI backend
-  // For now, we'll just echo the message back
-  return `Echo: ${message}`;
+  const data = await response.json();
+  console.log('Received from backend:', data.answer.content[0].text);
+  return data.answer.content[0].text;
 }
 
 export function ChatBox() {
