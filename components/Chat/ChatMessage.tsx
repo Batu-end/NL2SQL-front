@@ -6,6 +6,7 @@ import classes from './ChatMessage.module.css';
 export type Message = {
   sender: 'user' | 'bot';
   text: string;
+  isTyping?: boolean;
 };
 
 interface ChatMessageProps {
@@ -18,7 +19,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
   return (
     <div className={`${classes.messageRow} ${isBot ? classes.botRow : classes.userRow}`}>
-      <Group gap="sm">
+      <Group gap="sm" align="flex-start" wrap="nowrap">
         {isBot && <Avatar size="lg">{avatar}</Avatar>}
         <Paper
           withBorder
@@ -28,7 +29,15 @@ export function ChatMessage({ message }: ChatMessageProps) {
             isBot ? classes.botBubble : classes.userBubble
           }`}
         >
-          <Text>{message.text}</Text>
+          {message.isTyping ? (
+            <div className={classes.typingIndicator}>
+              <div />
+              <div />
+              <div />
+            </div>
+          ) : (
+            <Text>{message.text}</Text>
+          )}
         </Paper>
         {!isBot && <Avatar size="lg">{avatar}</Avatar>}
       </Group>

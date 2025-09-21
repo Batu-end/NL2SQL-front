@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { IconArrowRight } from '@tabler/icons-react';
-import { ActionIcon, Box, ScrollArea, TextInput } from '@mantine/core';
+import { ActionIcon, Box, ScrollArea, Textarea } from '@mantine/core';
 import { ChatMessage, Message } from './ChatMessage';
 import classes from './ChatBox.module.css';
 
@@ -32,6 +32,13 @@ export function ChatBox() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const viewport = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (viewport.current) {
+      viewport.current.scrollTo({ top: viewport.current.scrollHeight, behavior: 'smooth' });
+    }
+  }, [messages]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isSending) {
@@ -39,21 +46,22 @@ export function ChatBox() {
     }
 
     const userMessage: Message = { sender: 'user', text: inputValue };
-    setMessages((prev) => [...prev, userMessage]);
+    const thinkingMessage: Message = { sender: 'bot', text: '...', isTyping: true };
+    setMessages((prev) => [...prev, userMessage, thinkingMessage]);
     setInputValue('');
     setIsSending(true);
 
     try {
       const botResponseText = await getBotResponse(inputValue);
       const botMessage: Message = { sender: 'bot', text: botResponseText };
-      setMessages((prev) => [...prev, botMessage]);
+      setMessages((prev) => [...prev.slice(0, -1), botMessage]);
     } catch (error) {
       console.error('Error fetching bot response:', error);
       const errorMessage: Message = {
         sender: 'bot',
         text: 'Sorry, something went wrong. Please try again.',
       };
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => [...prev.slice(0, -1), errorMessage]);
     } finally {
       setIsSending(false);
     }
@@ -61,19 +69,20 @@ export function ChatBox() {
 
   return (
     <Box className={classes.chatBox}>
-      <ScrollArea className={classes.messageContainer}>
+      <ScrollArea className={classes.messageContainer} viewportRef={viewport} type='hover'>
         {messages.map((msg, index) => (
           <ChatMessage key={index} message={msg} />
         ))}
       </ScrollArea>
       <div className={classes.inputArea}>
-        <TextInput
+        <Textarea
           className={classes.textInput}
           placeholder="Type your message..."
           value={inputValue}
           onChange={(event) => setInputValue(event.currentTarget.value)}
           onKeyDown={(event) => {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && !event.shiftKey) {
+              event.preventDefault();
               handleSendMessage();
             }
           }}

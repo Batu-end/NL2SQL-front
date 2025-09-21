@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { SchemaExplorer } from '@/components/SchemaExplorer/SchemaExplorer';
 import { DataTableViewer } from '@/components/DataTableViewer/DataTableViewer';
 import { ChatBox } from '@/components/Chat/ChatBox';
-
+import classes from './ChatPage.module.css';
 
 export default function ChatPage() {
   const [activeTab, setActiveTab] = useState<string | null>('chat');
@@ -22,14 +22,14 @@ export default function ChatPage() {
         <SchemaExplorer onTableSelect={handleTableSelect} />
       </AppShell.Navbar>
 
-      <AppShell.Main>
-        <Tabs value={activeTab} onChange={setActiveTab}>
+      <AppShell.Main style={{ display: 'flex', flexDirection: 'column' }}>
+        <Tabs value={activeTab} onChange={setActiveTab} className={classes.tabs}>
           <Tabs.List>
             <Tabs.Tab value="chat">Chat</Tabs.Tab>
             {viewingTable && <Tabs.Tab value={viewingTable}>{viewingTable}</Tabs.Tab>}
           </Tabs.List>
 
-          <Tabs.Panel value="chat" pt="md">
+          <Tabs.Panel value="chat" className={classes.chatTabPanel}>
             <ChatBox />
           </Tabs.Panel>
 
