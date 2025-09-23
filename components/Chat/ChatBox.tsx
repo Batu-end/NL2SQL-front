@@ -6,22 +6,63 @@ import { ActionIcon, Box, ScrollArea, Textarea } from '@mantine/core';
 import { ChatMessage, Message } from './ChatMessage';
 import classes from './ChatBox.module.css';
 
+
 // Placeholder for the backend API call
+// async function getBotResponse(message: string): Promise<string> {
+//   console.log('Sending to backend:', message);
+//   // Simulate network delay
+//   const response = await fetch('http://localhost:8000/api/ask', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({ question: message }),
+//   });
+
+//   const data = await response.json();
+//   console.log('Received from backend:', data.answer.content[0].text);
+//   return data.answer.content[0].text;
+// }
+
+// 1. Create a variable outside your function to store the session ID.
+//    In a real app (React, Vue, etc.), this would be part of your component's state.
+let currentSessionId: string | null = null;
+
 async function getBotResponse(message: string): Promise<string> {
   console.log('Sending to backend:', message);
-  // Simulate network delay
+  
+  // 2. Include the currentSessionId in the request body.
+  //    On the very first request, this will be null, which is what the backend expects.
   const response = await fetch('http://localhost:8000/api/ask', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ question: message }),
+    body: JSON.stringify({ 
+      question: message,
+      session_id: currentSessionId 
+    }),
   });
 
+  if (!response.ok) {
+    // Handle potential errors from the backend
+    const errorData = await response.json();
+    console.error("Error from backend:", errorData.detail);
+    throw new Error(errorData.detail || "An unknown error occurred");
+  }
+
   const data = await response.json();
+
+  // 3. IMPORTANT: After getting a successful response, update the session ID
+  //    with the one the server sent back.
+  currentSessionId = data.session_id;
+
   console.log('Received from backend:', data.answer.content[0].text);
+  console.log('Session ID is now:', currentSessionId); // For debugging
+
   return data.answer.content[0].text;
 }
+
 
 export function ChatBox() {
   const [messages, setMessages] = useState<Message[]>([

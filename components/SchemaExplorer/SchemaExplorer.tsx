@@ -2,17 +2,27 @@
 import { Accordion, Group, Loader, Pill, Select, Text, Title, Tooltip } from '@mantine/core';
 import { IconKey } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { fetchSchema, MOCK_DATABASES, TableSchema } from '@/lib/db';
+import { fetchDatabases, fetchSchema, TableSchema, Database } from '@/lib/db';
 
 interface SchemaExplorerProps {
   onTableSelect: (tableName: string) => void;
 }
 
 export function SchemaExplorer({ onTableSelect }: SchemaExplorerProps) {
-  const [selectedDb, setSelectedDb] = useState<string | null>(MOCK_DATABASES[0].value);
+  const [databases, setDatabases] = useState<Database[]>([]);
+  const [selectedDb, setSelectedDb] = useState<string | null>(null);
   const [schema, setSchema] = useState<TableSchema[]>([]);
   const [loadingSchema, setLoadingSchema] = useState(false);
   const [selectedTableInAccordion, setSelectedTableInAccordion] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchDatabases().then((dbs) => {
+      setDatabases(dbs);
+      if (dbs.length > 0) {
+        setSelectedDb(dbs[0].value);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (!selectedDb) {
@@ -40,10 +50,12 @@ export function SchemaExplorer({ onTableSelect }: SchemaExplorerProps) {
       </Title>
       <Select
         label="Select Database"
-        data={MOCK_DATABASES}
+        data={databases}
         value={selectedDb}
         onChange={setSelectedDb}
         mb="md"
+        disabled={databases.length === 0}
+        placeholder={databases.length === 0 ? 'No databases found' : 'Select a database'}
       />
       <Text size="sm" fw={500} mb="xs">
         Tables
